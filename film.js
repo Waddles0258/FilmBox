@@ -104,3 +104,169 @@ const filmy = [
 		premiera: '2022-12-24',
 	},
 ]
+const countDay = (day)=>{
+	const difference = dayjs(day).diff(dayjs(), 'days');
+
+	if(difference===0){
+		return('dnes je premiera')
+	}else if(difference>0){
+		return(`což je za ${difference} dni`)
+	}else return(`coř bylo před ${-difference} dni`)
+}
+
+document.querySelector('#detail-filmu').innerHTML=" "
+console.log(location.hash)
+filmy.forEach((prvek)=>{
+	if(location.hash==='#'+prvek.id){
+		document.querySelector('#detail-filmu').innerHTML=`				<div class="row g-0">
+					<div class="col-md-5">
+						<img
+							src=${prvek.plakat.url}
+							alt="plakát"
+							class="img-fluid rounded-start"
+							width="780"
+							height="520"
+						/>
+					</div>
+					<div class="col-md-7">
+						<div class="card-body">
+							<h5 class="card-title">${prvek.nazev}</h5>
+							<p class="card-text">${prvek.popis}</p>
+							<p class="card-text">
+								<small class="text-muted" id="premiera"
+									>Premiéra <strong>${dayjs(prvek.premiera).format('D. M. YYYY')}</strong>, 
+									${countDay(prvek.premiera)}
+									</small
+								>
+							</p>
+							<h6>Hodnocení</h6>
+							<div class="stars">
+								<button
+									id="b1"
+									class="far fa-star button-star"
+									data-mdb-toggle="tooltip"
+									title="Nic moc"
+								>
+									1
+								</button>
+								<button
+									id="b2"
+									class="far fa-star button-star"
+									data-mdb-toggle="tooltip"
+									title="Ucházející"
+								>
+									2
+								</button>
+								<button
+									id="b3"
+									class="far fa-star button-star"
+									data-mdb-toggle="tooltip"
+									title="Dobrý"
+								>
+									3
+								</button>
+								<button
+									id="b4"
+									class="far fa-star button-star"
+									data-mdb-toggle="tooltip"
+									title="Skvělý"
+								>
+									4
+								</button>
+								<button
+									id="b5"
+									class="far fa-star button-star"
+									data-mdb-toggle="tooltip"
+									title="Úžasný"
+								>
+									5
+								</button>
+							</div>
+
+							<h6 class="mt-4">Poznámka</h6>
+							<form id="note-form">
+								<div class="row">
+									<div class="col-md-6 col-lg-7 col-xl-8 mb-2">
+										<div class="form-outline">
+											<textarea
+												class="form-control"
+												id="message-input"
+												rows="4"
+											></textarea>
+											<label class="form-label" for="message-input"
+												>Text poznámky</label
+											>
+										</div>
+									</div>
+									<div class="col-md-6 col-lg-5 col-xl-4">
+										<div class="form-check d-flex justify-content-center mb-2">
+											<input
+												class="form-check-input me-2 mb-2"
+												type="checkbox"
+												value=""
+												id="terms-checkbox"
+											/>
+											<label class="form-check-label" for="terms-checkbox">
+												Souhlasím se všeobecnými podmínky užívání.
+											</label>
+										</div>
+										<button type="submit" class="btn btn-primary btn-block">
+											Uložit
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>`
+	}
+})
+
+document.querySelectorAll('.fa-star').forEach((prvek) => {
+	prvek.addEventListener('click', () => {
+		const rating = prvek.textContent;
+		document.querySelectorAll('.fa-star').forEach((star, index) => {
+			if (index < rating) {
+				star.classList.add('fas');
+				star.classList.remove('far');
+			} else {
+				star.classList.add('far');
+				star.classList.remove('fas');
+			}
+		});
+	});
+});
+document.querySelectorAll('.fa-star').forEach((prvek) => {
+	prvek.addEventListener('mouseenter', () => {
+		const rating = prvek.textContent;
+		document.querySelectorAll('.fa-star').forEach((star, index) => {
+			if (index < rating) {
+				star.classList.add('fas');
+				star.classList.remove('far');
+			} else {
+				star.classList.add('far');
+				star.classList.remove('fas');
+			}
+		});
+	});
+});
+
+document.querySelector('#note-form').addEventListener('submit', (event)=>{
+	event.preventDefault()
+	if(document.querySelector('#message-input').value===""){
+		document.querySelector("#message-input").classList.add('is-invalid')
+	}else if(document.querySelector('#terms-checkbox').checked===false){
+		document.querySelector('#terms-checkbox').classList.add('is-invalid')
+	}else {
+		document.querySelector('#note-form').innerHTML=`<p class="card-text">${document.querySelector("#message-input").value}</p>`
+	}
+})
+document.querySelector('.play').addEventListener('click',()=>{
+	document.querySelector('video').play()
+})
+document.querySelector('video').addEventListener('playing',()=>{
+	document.querySelector('#prehravac').classList.add('playing')
+})
+document.querySelector('.pause').addEventListener('click',()=>{
+	document.querySelector('video').pause()
+	document.querySelector('#prehravac').classList.remove('playing')
+})
